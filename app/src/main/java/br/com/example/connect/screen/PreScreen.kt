@@ -1,6 +1,9 @@
 package br.com.example.connect.screen
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.Ease
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,8 +61,43 @@ import br.com.example.connect.ui.theme.poppinsFamily
 
 @Composable
 fun PreScreen(){
-    val scope = rememberCoroutineScope()
-    val offsetY = remember { Animatable(0f) }
+    val offsetYLogin = remember { Animatable(800f) }
+    val offsetYButtons = remember { Animatable(0f) }
+    var showLogin by remember { mutableStateOf(false) }
+
+    LaunchedEffect(showLogin) {
+        if (showLogin) {
+            offsetYButtons.animateTo(
+                targetValue = 800f,
+                animationSpec = tween(
+                    durationMillis = 350,
+                    easing = Ease
+                )
+            )
+            offsetYLogin.animateTo(
+                targetValue = 0f,
+                animationSpec = tween(
+                    durationMillis = 350,
+                    easing = Ease
+                )
+            )
+        } else {
+            offsetYLogin.animateTo(
+                targetValue = 800f,
+                animationSpec = tween(
+                    durationMillis = 350,
+                    easing = Ease
+                )
+            )
+            offsetYButtons.animateTo(
+                targetValue = 0f,
+                animationSpec = tween(
+                    durationMillis = 350,
+                    easing = Ease
+                )
+            )
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -73,17 +112,21 @@ fun PreScreen(){
                 .fillMaxSize()
         )
 
-        ContainerButtons()
-        ContainerLogin()
+        ContainerButtons (
+            offsetY = offsetYButtons.value
+        ){ showLogin = true }
+        ContainerLogin(
+            offsetY = offsetYLogin.value
+        ) { showLogin = false }
     }
 }
 
 @Composable
-fun ContainerButtons() {
+fun ContainerButtons(offsetY: Float, onShowLoginClicked: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .offset(y = 600.dp),
+            .offset(y = offsetY.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
 
@@ -124,7 +167,7 @@ fun ContainerButtons() {
             ) {
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = {/* TODO */},
+                    onClick = {},
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White
                     ),
@@ -147,7 +190,7 @@ fun ContainerButtons() {
 
                 OutlinedButton(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = {/* TODO */},
+                    onClick = onShowLoginClicked,
                     border = BorderStroke(
                         2.dp,
                         Color.White
@@ -185,7 +228,7 @@ fun ContainerButtons() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContainerLogin() {
+fun ContainerLogin(offsetY: Float, onHideLoginClicked: () -> Unit) {
 
     val emailValue = remember { mutableStateOf(TextFieldValue("")) }
     val passwordValue = remember { mutableStateOf(TextFieldValue("")) }
@@ -193,7 +236,7 @@ fun ContainerLogin() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .offset(y = 0.dp),
+            .offset(y = offsetY.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
 
@@ -203,9 +246,7 @@ fun ContainerLogin() {
             modifier = Modifier
                 .fillMaxHeight(0.7f)
                 .fillMaxWidth()
-                .background(
-                    color = Primary,
-                ),
+                .background(PrimaryTransparent),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ){
@@ -239,7 +280,7 @@ fun ContainerLogin() {
 
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = {/* TODO */},
+                    onClick = onHideLoginClicked,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White
                     ),
