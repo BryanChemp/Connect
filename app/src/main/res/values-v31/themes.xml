@@ -3,11 +3,10 @@
 
     <style name="Theme.Connect" parent="android:Theme.Material.Light.NoActionBar">
 
-        <item name="android:windowSplashScreenAnimatedIcon">@drawable/logo_light</item>
+        <item name="android:icon">@drawable/logo_light</item>
+        <item name="android:windowSplashScreenBackground">#ffffff</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="android:background">#000000</item>
 
     </style>
-
 </resources>

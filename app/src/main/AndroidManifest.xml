@@ -6,9 +6,9 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo_light"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/logo_light"
         android:supportsRtl="true"
         android:theme="@style/Theme.Connect"
         tools:targetApi="31">
@@ -24,7 +24,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.PreActivity" />
+        <activity android:name=".activity.LoginActivity" />
+        <activity android:name=".activity.RegisterActivity" />
 
     </application>
 

@@ -11,9 +11,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import br.com.example.connect.screen.PreScreen
+import br.com.example.connect.screen.RegisterScreen
 import br.com.example.connect.ui.theme.ConnectTheme
 
-class PreActivity : ComponentActivity() {
+class RegisterActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.dark(
@@ -24,7 +25,7 @@ class PreActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ConnectTheme {
-                PreScreen()
+                RegisterScreen(backDispatcher = this)
             }
         }
     }

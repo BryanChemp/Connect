@@ -104,7 +104,7 @@ val TextFieldLabelStyle = TextStyle(
 val TextFieldValueStyle = TextStyle(
     fontFamily = poppinsFamily,
     fontWeight = FontWeight.Normal,
-    fontSize = 18.sp,
+    fontSize = 16.sp,
     lineHeight = 32.sp,
     color = Color.White
 )
