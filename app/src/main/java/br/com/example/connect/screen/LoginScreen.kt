@@ -3,12 +3,22 @@ package br.com.example.connect.screen
 import android.content.Intent
 import androidx.activity.OnBackPressedDispatcherOwner
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Ease
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,11 +31,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.KeyboardArrowDown
+import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -34,6 +54,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -59,9 +80,12 @@ fun PreScreen(
 ){
     val context = LocalContext.current
 
-    val offsetYLogin = remember { Animatable(800f) }
     val offsetYButtons = remember { Animatable(0f) }
+    val offsetYLogin = remember { Animatable(800f) }
+    val offsetYDoubts = remember { Animatable(800f) }
+
     var showLogin by remember { mutableStateOf(false) }
+    var showDoubts by remember { mutableStateOf(false) }
 
     LaunchedEffect(showLogin) {
         if (showLogin) {
@@ -97,9 +121,45 @@ fun PreScreen(
         }
     }
 
-    BackHandler(showLogin) {
+    LaunchedEffect(showDoubts) {
+        if (showDoubts) {
+            offsetYButtons.animateTo(
+                targetValue = 800f,
+                animationSpec = tween(
+                    durationMillis = 350,
+                    easing = Ease
+                )
+            )
+            offsetYDoubts.animateTo(
+                targetValue = 0f,
+                animationSpec = tween(
+                    durationMillis = 350,
+                    easing = Ease
+                )
+            )
+        } else {
+            offsetYDoubts.animateTo(
+                targetValue = 800f,
+                animationSpec = tween(
+                    durationMillis = 350,
+                    easing = Ease
+                )
+            )
+            offsetYButtons.animateTo(
+                targetValue = 0f,
+                animationSpec = tween(
+                    durationMillis = 350,
+                    easing = Ease
+                )
+            )
+        }
+    }
+
+    BackHandler(showLogin || showDoubts) {
         if (showLogin) {
             showLogin = false
+        } else if (showDoubts) {
+            showDoubts = false
         } else {
             backDispatcher.onBackPressedDispatcher.onBackPressed()
         }
@@ -124,12 +184,21 @@ fun PreScreen(
                 val intent = Intent(context, RegisterActivity::class.java)
                 context.startActivity(intent)
             },
-            onLoginClicked = { showLogin = true }
+            onLoginClicked = {
+                showLogin = true
+            },
+            onDoubtsClicked = {
+                showDoubts = true
+            }
         )
 
         ContainerLogin(
             offsetY = offsetYLogin.value
         ) { showLogin = false }
+
+        ContainerDoubts(
+            offsetY = offsetYDoubts.value
+        ) { showDoubts = false }
     }
 }
 
@@ -138,6 +207,7 @@ fun ContainerButtons(
     offsetY: Float,
     onRegisterClicked: () -> Unit,
     onLoginClicked: () -> Unit,
+    onDoubtsClicked: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -226,15 +296,18 @@ fun ContainerButtons(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                Text(
+                TextButton(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "Dúvidas frequentes",
-                    style = MyTypography.labelMedium.copy(
-                        color = Color.White,
-                        textDecoration = TextDecoration.Underline,
-                        textAlign = TextAlign.Center
-                    )
-                )
+                    onClick = onDoubtsClicked
+                ) {
+                    Text(
+                        text = "Dúvidas frequentes",
+                        style = MyTypography.labelMedium.copy(
+                            color = Color.White,
+                            textDecoration = TextDecoration.Underline,
+                            textAlign = TextAlign.Center),
+                        )
+                }
             }
         }
 
@@ -274,14 +347,28 @@ fun ContainerLogin(offsetY: Float, onHideLoginClicked: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                Text(
-                    text = "Acessar conta",
-                    style = MyTypography.titleLarge.copy(
-                        color = Color.White,
-                        fontSize = 24.sp
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = onHideLoginClicked) {
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBack,
+                            contentDescription = "Botão voltar",
+                            tint = Color.White,
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text(
+                        text = "Acessar conta",
+                        style = MyTypography.titleLarge.copy(
+                            color = Color.White,
+                            fontSize = 24.sp
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(32.dp))
 
@@ -295,7 +382,7 @@ fun ContainerLogin(offsetY: Float, onHideLoginClicked: () -> Unit) {
 
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = onHideLoginClicked,
+                    onClick = { },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White
                     ),
@@ -330,5 +417,137 @@ fun ContainerLogin(offsetY: Float, onHideLoginClicked: () -> Unit) {
         }
 
         VersionField()
+    }
+}
+
+@Composable
+fun ContainerDoubts(offsetY: Float, onHideDoubtsClicked: () -> Unit) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .offset(y = offsetY.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Bottom
+    ) {
+
+        Column (
+            modifier = Modifier
+                .fillMaxHeight(0.7f)
+                .fillMaxWidth()
+                .background(PrimaryTransparent),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ){
+
+            Column (
+                Modifier
+                    .fillMaxWidth(0.8f)
+                    .padding()
+            ) {
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = onHideDoubtsClicked) {
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBack,
+                            contentDescription = "Botão voltar",
+                            tint = Color.White,
+                        )
+                    }
+                    
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text(
+                        text = "Dúvidas frequentes",
+                        style = MyTypography.titleLarge.copy(
+                            color = Color.White,
+                            fontSize = 24.sp
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                ExpandableCard("TESTE1")
+                Spacer(modifier = Modifier.height(16.dp))
+                ExpandableCard("TESTE232323")
+
+            }
+        }
+
+        VersionField()
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ExpandableCard(
+    title: String,
+) {
+    var expandedState by remember { mutableStateOf(false) }
+    val rotationState by animateFloatAsState(
+        targetValue = if (expandedState) 180f else 0f, label = ""
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .animateContentSize(
+                animationSpec = tween(
+                    durationMillis = 300,
+                    easing = LinearOutSlowInEasing
+                )
+            )
+            .clickable {
+                expandedState = !expandedState
+            }
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    modifier = Modifier
+                        .weight(6f),
+                    text = title,
+                    color = Color.White
+                )
+                IconButton(
+                    modifier = Modifier
+                        .weight(1f)
+                        .rotate(rotationState),
+                    onClick = {
+                        expandedState = !expandedState
+                    }) {
+                    Icon(
+                        imageVector = Icons.Rounded.KeyboardArrowDown,
+                        contentDescription = "Drop-Down Arrow",
+                        tint = Color.White
+                    )
+                }
+            }
+            if (expandedState) {
+                Text(
+                    text = "AAAAAAAAA",
+                    color = Color.White
+                )
+                Text(
+                    text = "AAAAAAAAA",
+                    color = Color.White
+                )
+                Text(
+                    text = "AAAAAAAAA",
+                    color = Color.White
+                )
+            }
+        }
     }
 }
