@@ -19,14 +19,14 @@ fun VersionField() {
     Row (
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White),
+            .background(Primary),
         horizontalArrangement = Arrangement.Center
     ){
         Text(
             modifier = Modifier.padding(24.dp),
             text = "1.0.0",
             style = VersionTextStyle.copy(
-                color = Primary
+                color = Color.White
             )
         )
     }

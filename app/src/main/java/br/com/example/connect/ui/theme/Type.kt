@@ -1,6 +1,7 @@
 package br.com.example.connect.ui.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -64,8 +65,8 @@ val MyTypography = Typography(
     ),
     labelMedium = TextStyle(
         fontFamily = poppinsFamily,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 18.sp,
+        fontWeight = FontWeight.Medium,
+        fontSize = 16.sp,
         lineHeight = 16.sp,
     ),
     labelLarge = TextStyle(
@@ -81,11 +82,29 @@ val VersionTextStyle = TextStyle(
     fontWeight = FontWeight.Bold,
     fontSize = 16.sp,
     lineHeight = 20.sp,
+    color = Color.White
 )
 
 val ButtonTextStyle = TextStyle(
     fontFamily = poppinsFamily,
-    fontWeight = FontWeight.Bold,
+    fontWeight = FontWeight.Medium,
     fontSize = 18.sp,
     lineHeight = 20.sp,
+    color = Color.White
+)
+
+val TextFieldLabelStyle = TextStyle(
+    fontFamily = poppinsFamily,
+    fontWeight = FontWeight.Normal,
+    fontSize = 16.sp,
+    lineHeight = 20.sp,
+    color = Color.White
+)
+
+val TextFieldValueStyle = TextStyle(
+    fontFamily = poppinsFamily,
+    fontWeight = FontWeight.Normal,
+    fontSize = 18.sp,
+    lineHeight = 32.sp,
+    color = Color.White
 )
