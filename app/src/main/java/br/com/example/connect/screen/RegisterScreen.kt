@@ -2,6 +2,7 @@ import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
@@ -17,9 +18,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import br.com.example.connect.R
 import br.com.example.connect.components.VersionField
 import br.com.example.connect.page.RegisterCodePage
 import br.com.example.connect.page.RegisterEmailPage
@@ -27,6 +31,8 @@ import br.com.example.connect.page.RegisterFinalPage
 import br.com.example.connect.page.RegisterNamePage
 import br.com.example.connect.page.RegisterPasswordPage
 import br.com.example.connect.ui.theme.Primary
+import br.com.example.connect.ui.theme.PrimaryTransparent
+import br.com.example.connect.ui.theme.PrimaryTransparent2
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class,
@@ -40,36 +46,51 @@ fun RegisterScreen() {
     val isFocused by keyboardAsState()
 
     Scaffold (
-        Modifier.background(Primary),
         bottomBar = {
             VersionField()
         }
     ){
-        Column (
-            Modifier
-                .fillMaxSize()
-                .background(Primary)
+
+        Box(
+            Modifier.fillMaxSize()
         ) {
 
-            TopBar(isFocused = isFocused)
+            Image(
+                painter = painterResource(id = R.drawable.bg_register_screen),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+            )
 
-            HorizontalPager(
-                modifier = Modifier.fillMaxSize(),
-                state = pagerState,
-                pageCount = 5
-            ) { page ->
-                when (page) {
+            Column (
+                Modifier
+                    .fillMaxSize()
+                    .background(PrimaryTransparent2)
+            ) {
 
-                    0 -> RegisterEmailPage()
-                    1 -> RegisterNamePage()
-                    2 -> RegisterCodePage()
-                    3 -> RegisterPasswordPage()
-                    4 -> RegisterFinalPage()
+                TopBar(isFocused = isFocused)
 
+                HorizontalPager(
+                    modifier = Modifier.fillMaxSize(),
+                    state = pagerState,
+                    pageCount = 5
+                ) { page ->
+                    when (page) {
+
+                        0 -> RegisterEmailPage()
+                        1 -> RegisterNamePage()
+                        2 -> RegisterCodePage()
+                        3 -> RegisterPasswordPage()
+                        4 -> RegisterFinalPage()
+
+                    }
                 }
-            }
 
+            }
         }
+
+
     }
 }
 
@@ -81,7 +102,7 @@ fun TopBar(isFocused: Boolean){
         Modifier
             .fillMaxWidth()
             .fillMaxHeight(heightFraction)
-            .background(Primary),
+            .background(PrimaryTransparent2),
         verticalAlignment = Alignment.Bottom
     ) {
         

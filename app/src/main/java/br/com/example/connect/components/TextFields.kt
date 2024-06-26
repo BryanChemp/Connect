@@ -78,13 +78,13 @@ fun SimpleTextField(
         colors = TextFieldDefaults.textFieldColors(
             containerColor = Color.Transparent,
             focusedIndicatorColor = Color.White,
-            unfocusedIndicatorColor = Color.Gray,
+            unfocusedIndicatorColor = Color.LightGray,
             cursorColor = Color.White,
             textColor = Color.White,
-            unfocusedLabelColor = Color.Gray,
-            focusedLabelColor = Color.Gray,
+            unfocusedLabelColor = Color.LightGray,
+            focusedLabelColor = Color.LightGray,
             focusedSupportingTextColor = Color.White,
-            unfocusedSupportingTextColor = Color.Gray
+            unfocusedSupportingTextColor = Color.LightGray
         ),
         singleLine = true,
         maxLines = 1,
@@ -130,12 +130,12 @@ fun SimpleTextFieldWithoutLabel(
         colors = TextFieldDefaults.textFieldColors(
             containerColor = Color.Transparent,
             focusedIndicatorColor = Color.White,
-            unfocusedIndicatorColor = Color.Gray,
+            unfocusedIndicatorColor = Color.LightGray,
             cursorColor = Color.White,
             textColor = Color.White,
             focusedSupportingTextColor = Color.White,
-            unfocusedSupportingTextColor = Color.Gray,
-            placeholderColor = Color.Gray
+            unfocusedSupportingTextColor = Color.LightGray,
+            placeholderColor = Color.LightGray
         ),
         singleLine = true,
         maxLines = 1,
@@ -189,13 +189,72 @@ fun TextFieldWithIconBtn(
         colors = TextFieldDefaults.textFieldColors(
             containerColor = Color.Transparent,
             focusedIndicatorColor = Color.White,
-            unfocusedIndicatorColor = Color.Gray,
+            unfocusedIndicatorColor = Color.LightGray,
             cursorColor = Color.White,
             textColor = Color.White,
-            unfocusedLabelColor = Color.Gray,
-            focusedLabelColor = Color.Gray,
+            unfocusedLabelColor = Color.LightGray,
+            focusedLabelColor = Color.LightGray,
             focusedSupportingTextColor = Color.White,
-            unfocusedSupportingTextColor = Color.Gray
+            unfocusedSupportingTextColor = Color.LightGray
+        ),
+        singleLine = true,
+        maxLines = 1,
+        textStyle = TextStyle(color = Color.White, fontSize = 16.sp),
+        supportingText = {
+            Text(text = errorMsg.value)
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TextFieldWithIconBtnWithouLabel(
+    placeholder: String,
+    value: MutableState<TextFieldValue>,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    onTrailingIconClick: () -> Unit = {},
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    errorMsg: MutableState<String>
+) {
+    var count = remember {mutableStateOf(0)}
+
+    TextField(
+        value = value.value,
+        onValueChange = { newText ->
+            value.value = newText
+            count.value++
+            if(count.value > 5){
+                errorMsg.value = ""
+                count.value = 0
+            }
+        },
+        placeholder = {
+            Text(
+                text = placeholder,
+                style = TextStyle(
+                    fontFamily = poppinsFamily,
+                    fontSize = 14.sp
+                )
+            )
+        },
+        trailingIcon = {
+            if (trailingIcon != null) {
+                Box(modifier = Modifier.clickable { onTrailingIconClick() }) {
+                    trailingIcon()
+                }
+            }
+        },
+        visualTransformation = visualTransformation,
+        modifier = Modifier.fillMaxWidth(),
+        colors = TextFieldDefaults.textFieldColors(
+            containerColor = Color.Transparent,
+            focusedIndicatorColor = Color.White,
+            unfocusedIndicatorColor = Color.LightGray,
+            cursorColor = Color.White,
+            textColor = Color.White,
+            focusedSupportingTextColor = Color.White,
+            unfocusedSupportingTextColor = Color.LightGray,
+            placeholderColor = Color.LightGray
         ),
         singleLine = true,
         maxLines = 1,
@@ -228,6 +287,48 @@ fun PasswordTextField(
             isPasswordVisible = !isPasswordVisible
         },
         visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+        errorMsg = errorMsg
+    )
+}
+
+@Composable
+fun PasswordTextFieldWithoutLabel(
+    placeholder: String,
+    value: MutableState<TextFieldValue>,
+    errorMsg: MutableState<String>,
+    isPasswordVisible: MutableState<Boolean>
+) {
+
+    TextFieldWithIconBtnWithouLabel(
+        placeholder = placeholder,
+        value = value,
+        trailingIcon = {
+            Icon(
+                painter = painterResource(id = if (isPasswordVisible.value) R.drawable.ic_open_eye else R.drawable.ic_closed_eye),
+                contentDescription = if (isPasswordVisible.value) "Hide password" else "Show password",
+                tint = Color.White
+            )
+        },
+        onTrailingIconClick = {
+            isPasswordVisible.value = !isPasswordVisible.value
+        },
+        visualTransformation = if (isPasswordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+        errorMsg = errorMsg
+    )
+}
+
+@Composable
+fun PasswordTextFieldWithoutLabelAndButton(
+    placeholder: String,
+    value: MutableState<TextFieldValue>,
+    errorMsg: MutableState<String>,
+    isPasswordVisible: MutableState<Boolean>
+) {
+
+    TextFieldWithIconBtnWithouLabel(
+        placeholder = placeholder,
+        value = value,
+        visualTransformation = if (isPasswordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
         errorMsg = errorMsg
     )
 }
@@ -283,12 +384,12 @@ fun CodeTextField(
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color.Transparent,
                     focusedIndicatorColor = Color.White,
-                    unfocusedIndicatorColor = Color.Gray,
+                    unfocusedIndicatorColor = Color.LightGray,
                     cursorColor = Color.White,
                     textColor = Color.White,
                     focusedSupportingTextColor = Color.White,
-                    unfocusedSupportingTextColor = Color.Gray,
-                    placeholderColor = Color.Gray
+                    unfocusedSupportingTextColor = Color.LightGray,
+                    placeholderColor = Color.LightGray
                 ),
                 singleLine = true,
                 maxLines = 1,

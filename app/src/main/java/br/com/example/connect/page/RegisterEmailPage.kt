@@ -28,6 +28,8 @@ import br.com.example.connect.components.SimpleTextFieldWithoutLabel
 import br.com.example.connect.ui.theme.ButtonTextStyle
 import br.com.example.connect.ui.theme.MyTypography
 import br.com.example.connect.ui.theme.Primary
+import br.com.example.connect.ui.theme.PrimaryTransparent
+import br.com.example.connect.ui.theme.PrimaryTransparent2
 import br.com.example.connect.ui.theme.TextFieldLabelStyle
 
 @Composable
@@ -38,7 +40,7 @@ fun RegisterEmailPage() {
 
     Column (
         Modifier
-            .background(Primary)
+            .background(PrimaryTransparent2)
             .fillMaxWidth()
             .fillMaxHeight(0.9f),
         verticalArrangement = Arrangement.Bottom,
@@ -58,8 +60,7 @@ fun RegisterEmailPage() {
             Column (
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.6f)
-                    .background(Color.DarkGray),
+                    .fillMaxHeight(0.6f),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Column {
