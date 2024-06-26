@@ -1,17 +1,15 @@
 package br.com.example.connect.activity
 
+import RegisterScreen
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
-import br.com.example.connect.screen.PreScreen
-import br.com.example.connect.screen.RegisterScreen
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import br.com.example.connect.ui.theme.ConnectTheme
 
 class RegisterActivity : ComponentActivity() {
@@ -25,7 +23,7 @@ class RegisterActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ConnectTheme {
-                RegisterScreen(backDispatcher = this)
+                RegisterScreen()
             }
         }
     }
