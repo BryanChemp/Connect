@@ -34,11 +34,18 @@ fun SimpleTextField(
     value: MutableState<TextFieldValue>,
     errorMsg: MutableState<String>
 ) {
+
+    var count = remember {mutableStateOf(0)}
+
     TextField(
         value = value.value,
         onValueChange = { newText ->
             value.value = newText
-            errorMsg.value = ""
+            count.value++
+            if(count.value > 5){
+                errorMsg.value = ""
+                count.value = 0
+            }
         },
         label = {
             Text(
@@ -57,13 +64,15 @@ fun SimpleTextField(
             cursorColor = Color.White,
             textColor = Color.White,
             unfocusedLabelColor = Color.Gray,
-            focusedLabelColor = Color.Gray
+            focusedLabelColor = Color.Gray,
+            focusedSupportingTextColor = Color.White,
+            unfocusedSupportingTextColor = Color.Gray
         ),
         singleLine = true,
         maxLines = 1,
         textStyle = TextFieldValueStyle,
         supportingText = {
-            Text(text = errorMsg.value, style = TextStyle(color = Color.White))
+            Text(text = errorMsg.value)
         }
     )
 }
@@ -78,11 +87,17 @@ fun TextFieldWithIconBtn(
     visualTransformation: VisualTransformation = VisualTransformation.None,
     errorMsg: MutableState<String>
 ) {
+    var count = remember {mutableStateOf(0)}
+
     TextField(
         value = value.value,
         onValueChange = { newText ->
             value.value = newText
-            errorMsg.value = ""
+            count.value++
+            if(count.value > 5){
+                errorMsg.value = ""
+                count.value = 0
+            }
         },
         label = {
             Text(
@@ -109,13 +124,15 @@ fun TextFieldWithIconBtn(
             cursorColor = Color.White,
             textColor = Color.White,
             unfocusedLabelColor = Color.Gray,
-            focusedLabelColor = Color.Gray
+            focusedLabelColor = Color.Gray,
+            focusedSupportingTextColor = Color.White,
+            unfocusedSupportingTextColor = Color.Gray
         ),
         singleLine = true,
         maxLines = 1,
         textStyle = TextStyle(color = Color.White, fontSize = 16.sp),
         supportingText = {
-            Text(text = errorMsg.value, style = TextStyle(color = Color.White))
+            Text(text = errorMsg.value)
         }
     )
 }

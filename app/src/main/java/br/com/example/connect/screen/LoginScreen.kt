@@ -446,6 +446,9 @@ fun validateLogin(
     validPassword: MutableState<Boolean>
 ) : Boolean {
 
+    errorEmailMsg.value = " "
+    errorPassMsg.value = " "
+
     validEmail.value = email.value.text == "bryan@gmail.com"
     validPassword.value = password.value.text == "1234"
 
