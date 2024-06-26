@@ -26,7 +26,7 @@ fun VersionField() {
             modifier = Modifier.padding(24.dp),
             text = "1.0.0",
             style = VersionTextStyle.copy(
-                color = Color.White
+                color = Color.White,
             )
         )
     }

@@ -3,18 +3,12 @@ package br.com.example.connect.screen
 import android.content.Intent
 import androidx.activity.OnBackPressedDispatcherOwner
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Ease
-import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -32,15 +26,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
-import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
@@ -48,6 +41,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -69,6 +63,7 @@ import br.com.example.connect.activity.RegisterActivity
 import br.com.example.connect.components.PasswordTextField
 import br.com.example.connect.components.SimpleTextField
 import br.com.example.connect.components.VersionField
+import br.com.example.connect.statics.DoubtList
 import br.com.example.connect.ui.theme.ButtonTextStyle
 import br.com.example.connect.ui.theme.MyTypography
 import br.com.example.connect.ui.theme.Primary
@@ -181,26 +176,31 @@ fun PreScreen(
         ContainerButtons (
             offsetY = offsetYButtons.value,
             onRegisterClicked = {
-                val intent = Intent(context, RegisterActivity::class.java)
-                context.startActivity(intent)
+                if(!showDoubts && !showLogin){
+                    val intent = Intent(context, RegisterActivity::class.java)
+                    context.startActivity(intent)
+                }
             },
             onLoginClicked = {
-                showLogin = true
+                showLogin = !showLogin
             },
             onDoubtsClicked = {
-                showDoubts = true
+                showDoubts = !showDoubts
             }
         )
 
         ContainerLogin(
-            offsetY = offsetYLogin.value
-        ) { showLogin = false }
+            offsetY = offsetYLogin.value,
+            onHideLoginClicked = { showLogin = false},
+        )
 
         ContainerDoubts(
             offsetY = offsetYDoubts.value
         ) { showDoubts = false }
     }
 }
+
+
 
 @Composable
 fun ContainerButtons(
@@ -316,10 +316,17 @@ fun ContainerButtons(
 }
 
 @Composable
-fun ContainerLogin(offsetY: Float, onHideLoginClicked: () -> Unit) {
+fun ContainerLogin(
+    offsetY: Float,
+    onHideLoginClicked: () -> Unit,
+) {
 
     val emailValue = remember { mutableStateOf(TextFieldValue("")) }
     val passwordValue = remember { mutableStateOf(TextFieldValue("")) }
+    val errorEmailMsg = remember { mutableStateOf("") }
+    val errorPasswordMsg = remember { mutableStateOf("") }
+    val validEmail = remember { mutableStateOf(false) }
+    val validPassword = remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -372,17 +379,27 @@ fun ContainerLogin(offsetY: Float, onHideLoginClicked: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                SimpleTextField("Seu email", emailValue)
+                SimpleTextField("Seu email", emailValue, errorEmailMsg)
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
-                PasswordTextField("Sua senha", passwordValue)
+                PasswordTextField("Sua senha", passwordValue, errorPasswordMsg)
 
                 Spacer(modifier = Modifier.height(32.dp))
 
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = { },
+                    onClick = {
+                        if(validateLogin(
+                                emailValue,
+                                passwordValue,
+                                errorEmailMsg,
+                                errorPasswordMsg,
+                                validEmail,
+                                validPassword)) {
+                            // iniciar login
+                        }
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White
                     ),
@@ -418,6 +435,24 @@ fun ContainerLogin(offsetY: Float, onHideLoginClicked: () -> Unit) {
 
         VersionField()
     }
+}
+
+fun validateLogin(
+    email: MutableState<TextFieldValue>,
+    password: MutableState<TextFieldValue>,
+    errorEmailMsg: MutableState<String>,
+    errorPassMsg: MutableState<String>,
+    validEmail: MutableState<Boolean>,
+    validPassword: MutableState<Boolean>
+) : Boolean {
+
+    validEmail.value = email.value.text == "bryan@gmail.com"
+    validPassword.value = password.value.text == "1234"
+
+    if(!validEmail.value) errorEmailMsg.value = "Email não cadastrado"
+    if(!validPassword.value) errorPassMsg.value = "Senha incorreta"
+
+    return  validEmail.value && validPassword.value
 }
 
 @Composable
@@ -473,9 +508,12 @@ fun ContainerDoubts(offsetY: Float, onHideDoubtsClicked: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                ExpandableCard("TESTE1")
-                Spacer(modifier = Modifier.height(16.dp))
-                ExpandableCard("TESTE232323")
+                LazyColumn {
+                    this.items(DoubtList.doubts) { doubt ->
+                        ExpandableCard(title = doubt.title, description = doubt.description)
+                        Spacer(modifier = Modifier.height(24.dp))
+                    }
+                }
 
             }
         }
@@ -484,10 +522,10 @@ fun ContainerDoubts(offsetY: Float, onHideDoubtsClicked: () -> Unit) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpandableCard(
     title: String,
+    description: String,
 ) {
     var expandedState by remember { mutableStateOf(false) }
     val rotationState by animateFloatAsState(
@@ -536,16 +574,9 @@ fun ExpandableCard(
             }
             if (expandedState) {
                 Text(
-                    text = "AAAAAAAAA",
-                    color = Color.White
-                )
-                Text(
-                    text = "AAAAAAAAA",
-                    color = Color.White
-                )
-                Text(
-                    text = "AAAAAAAAA",
-                    color = Color.White
+                    text = description,
+                    color = Color.White,
+                    modifier = Modifier.padding(vertical = 16.dp),
                 )
             }
         }

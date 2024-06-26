@@ -79,8 +79,8 @@ val MyTypography = Typography(
 
 val VersionTextStyle = TextStyle(
     fontFamily = poppinsFamily,
-    fontWeight = FontWeight.Bold,
-    fontSize = 16.sp,
+    fontWeight = FontWeight.SemiBold,
+    fontSize = 14.sp,
     lineHeight = 20.sp,
     color = Color.White
 )

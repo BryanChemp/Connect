@@ -18,7 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.sp
 import br.com.example.connect.R
 import br.com.example.connect.ui.theme.TextFieldValueStyle
@@ -29,11 +31,15 @@ import br.com.example.connect.ui.theme.poppinsFamily
 @Composable
 fun SimpleTextField(
     label: String,
-    value: MutableState<TextFieldValue>
+    value: MutableState<TextFieldValue>,
+    errorMsg: MutableState<String>
 ) {
     TextField(
         value = value.value,
-        onValueChange = { newText -> value.value = newText },
+        onValueChange = { newText ->
+            value.value = newText
+            errorMsg.value = ""
+        },
         label = {
             Text(
                 text = label,
@@ -55,7 +61,10 @@ fun SimpleTextField(
         ),
         singleLine = true,
         maxLines = 1,
-        textStyle = TextFieldValueStyle
+        textStyle = TextFieldValueStyle,
+        supportingText = {
+            Text(text = errorMsg.value, style = TextStyle(color = Color.White))
+        }
     )
 }
 
@@ -65,11 +74,16 @@ fun TextFieldWithIconBtn(
     label: String,
     value: MutableState<TextFieldValue>,
     trailingIcon: @Composable (() -> Unit)? = null,
-    onTrailingIconClick: () -> Unit = {}
+    onTrailingIconClick: () -> Unit = {},
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    errorMsg: MutableState<String>
 ) {
     TextField(
         value = value.value,
-        onValueChange = { newText -> value.value = newText },
+        onValueChange = { newText ->
+            value.value = newText
+            errorMsg.value = ""
+        },
         label = {
             Text(
                 text = label,
@@ -86,6 +100,7 @@ fun TextFieldWithIconBtn(
                 }
             }
         },
+        visualTransformation = visualTransformation,
         modifier = Modifier.fillMaxWidth(),
         colors = TextFieldDefaults.textFieldColors(
             containerColor = Color.Transparent,
@@ -98,14 +113,18 @@ fun TextFieldWithIconBtn(
         ),
         singleLine = true,
         maxLines = 1,
-        textStyle = TextStyle(color = Color.White, fontSize = 18.sp)
+        textStyle = TextStyle(color = Color.White, fontSize = 16.sp),
+        supportingText = {
+            Text(text = errorMsg.value, style = TextStyle(color = Color.White))
+        }
     )
 }
 
 @Composable
 fun PasswordTextField(
     label: String,
-    value: MutableState<TextFieldValue>
+    value: MutableState<TextFieldValue>,
+    errorMsg: MutableState<String>
 ) {
     var isPasswordVisible by remember { mutableStateOf(false) }
 
@@ -121,6 +140,8 @@ fun PasswordTextField(
         },
         onTrailingIconClick = {
             isPasswordVisible = !isPasswordVisible
-        }
+        },
+        visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+        errorMsg = errorMsg
     )
 }

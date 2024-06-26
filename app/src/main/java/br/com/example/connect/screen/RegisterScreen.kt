@@ -77,7 +77,7 @@ fun RegisterScreen(
     Column (
         modifier = Modifier
             .fillMaxSize()
-            .background(Primary)
+            .background(Color.Red)
     ) {
 
     }
