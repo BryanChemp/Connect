@@ -1,13 +1,11 @@
-package br.com.example.connect.page
+package br.com.example.connect.page.register
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,23 +20,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.com.example.connect.components.CodeTextField
 import br.com.example.connect.components.SimpleTextFieldWithoutLabel
 import br.com.example.connect.ui.theme.ButtonTextStyle
 import br.com.example.connect.ui.theme.MyTypography
 import br.com.example.connect.ui.theme.Primary
-import br.com.example.connect.ui.theme.PrimaryTransparent
 import br.com.example.connect.ui.theme.PrimaryTransparent2
-import br.com.example.connect.ui.theme.TextFieldLabelStyle
 
 @Composable
-fun RegisterCodePage() {
-    val codeLength = 5
-    val codeValues = List(codeLength) { remember { mutableStateOf(TextFieldValue("")) } }
-    val errorCodeMsg = remember { mutableStateOf("") }
+fun RegisterNamePage(goToNextStep: () -> Unit) {
+
+    val nameValue = remember { mutableStateOf(TextFieldValue("")) }
+    val errorNameMsg = remember { mutableStateOf("") }
+    val lastnameValue = remember { mutableStateOf(TextFieldValue("")) }
+    val errorErrorLastnameMsg = remember { mutableStateOf("") }
 
     Column (
         Modifier
@@ -67,20 +63,9 @@ fun RegisterCodePage() {
             ) {
                 Column {
                     Text(
-                        text = "Confirme seu email",
+                        text = "Qual é o seu nome?",
                         style = MyTypography.titleLarge.copy(
                             fontSize = 24.sp,
-                            textAlign = TextAlign.Center,
-                            color = Color.White
-                        ),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Text(
-                        text = "Digite o código que chegou no seu email",
-                        style = TextFieldLabelStyle.copy(
                             textAlign = TextAlign.Center,
                             color = Color.White
                         ),
@@ -89,14 +74,25 @@ fun RegisterCodePage() {
                 }
 
                 Column {
+                    SimpleTextFieldWithoutLabel(
+                        placeholder = "Seu nome",
+                        value = nameValue,
+                        errorMsg = errorNameMsg,
+                    )
 
-                    CodeTextField(codeValues, codeLength)
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                    SimpleTextFieldWithoutLabel(
+                        placeholder = "Seu sobrenome",
+                        value = lastnameValue,
+                        errorMsg = errorErrorLastnameMsg,
+                    )
+
+                    Spacer(modifier = Modifier.height(32.dp))
 
                     Button(
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = {},
+                        onClick = goToNextStep,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.White
                         ),

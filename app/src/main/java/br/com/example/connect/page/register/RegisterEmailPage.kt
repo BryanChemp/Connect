@@ -1,4 +1,4 @@
-package br.com.example.connect.page
+package br.com.example.connect.page.register
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,7 +13,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -28,12 +27,11 @@ import br.com.example.connect.components.SimpleTextFieldWithoutLabel
 import br.com.example.connect.ui.theme.ButtonTextStyle
 import br.com.example.connect.ui.theme.MyTypography
 import br.com.example.connect.ui.theme.Primary
-import br.com.example.connect.ui.theme.PrimaryTransparent
 import br.com.example.connect.ui.theme.PrimaryTransparent2
 import br.com.example.connect.ui.theme.TextFieldLabelStyle
 
 @Composable
-fun RegisterEmailPage() {
+fun RegisterEmailPage(goToNextStep: () -> Unit) {
 
     val emailValue = remember { mutableStateOf(TextFieldValue("")) }
     val errorEmailMsg = remember { mutableStateOf("") }
@@ -97,7 +95,7 @@ fun RegisterEmailPage() {
 
                     Button(
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = {},
+                        onClick = goToNextStep,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.White
                         ),

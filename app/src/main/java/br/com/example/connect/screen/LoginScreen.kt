@@ -68,6 +68,7 @@ import br.com.example.connect.ui.theme.ButtonTextStyle
 import br.com.example.connect.ui.theme.MyTypography
 import br.com.example.connect.ui.theme.Primary
 import br.com.example.connect.ui.theme.PrimaryTransparent
+import br.com.example.connect.ui.theme.PrimaryTransparent2
 
 @Composable
 fun PreScreen(
@@ -78,9 +79,11 @@ fun PreScreen(
     val offsetYButtons = remember { Animatable(0f) }
     val offsetYLogin = remember { Animatable(800f) }
     val offsetYDoubts = remember { Animatable(800f) }
+    val offsetYMissPass = remember { Animatable(800f) }
 
     var showLogin by remember { mutableStateOf(false) }
     var showDoubts by remember { mutableStateOf(false) }
+    var showMissPass by remember { mutableStateOf(false) }
 
     LaunchedEffect(showLogin) {
         if (showLogin) {
@@ -150,6 +153,50 @@ fun PreScreen(
         }
     }
 
+    LaunchedEffect(showMissPass) {
+        if (showMissPass) {
+            offsetYLogin.animateTo(
+                targetValue = 800f,
+                animationSpec = tween(
+                    durationMillis = 350,
+                    easing = Ease
+                )
+            )
+            offsetYMissPass.animateTo(
+                targetValue = 0f,
+                animationSpec = tween(
+                    durationMillis = 350,
+                    easing = Ease
+                )
+            )
+        } else {
+            offsetYMissPass.animateTo(
+                targetValue = 800f,
+                animationSpec = tween(
+                    durationMillis = 350,
+                    easing = Ease
+                )
+            )
+            if (showLogin) {
+                offsetYLogin.animateTo(
+                    targetValue = 0f,
+                    animationSpec = tween(
+                        durationMillis = 350,
+                        easing = Ease
+                    )
+                )
+            } else {
+                offsetYButtons.animateTo(
+                    targetValue = 0f,
+                    animationSpec = tween(
+                        durationMillis = 350,
+                        easing = Ease
+                    )
+                )
+            }
+        }
+    }
+
     BackHandler(showLogin || showDoubts) {
         if (showLogin) {
             showLogin = false
@@ -186,17 +233,23 @@ fun PreScreen(
             },
             onDoubtsClicked = {
                 showDoubts = !showDoubts
-            }
+            },
+
         )
 
         ContainerLogin(
             offsetY = offsetYLogin.value,
             onHideLoginClicked = { showLogin = false},
+            onMissPassClicked = { showMissPass = !showMissPass }
         )
 
         ContainerDoubts(
             offsetY = offsetYDoubts.value
         ) { showDoubts = false }
+
+        ContainerMissPass(
+            offsetY = offsetYMissPass.value,
+        ) { showMissPass = false }
     }
 }
 
@@ -207,7 +260,7 @@ fun ContainerButtons(
     offsetY: Float,
     onRegisterClicked: () -> Unit,
     onLoginClicked: () -> Unit,
-    onDoubtsClicked: () -> Unit
+    onDoubtsClicked: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -218,33 +271,36 @@ fun ContainerButtons(
 
     ) {
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(color = PrimaryTransparent)
-        ){
-            Column (
-                Modifier.padding(horizontal = 32.dp)
-            ){
-                Text(
-                    text = "Você conectado\nsempre",
-                    color = Color.White,
-                    style = MyTypography.titleLarge,
-                )
-            }
-        }
 
-        Spacer(modifier = Modifier.height(32.dp))
 
         Column (
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    color = Primary,
+                    color = PrimaryTransparent2,
                 ),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Bottom
         ){
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ){
+                Column (
+                    Modifier.padding(horizontal = 32.dp)
+                ){
+                    Text(
+                        text = "Você conectado\nsempre",
+                        color = Color.White,
+                        style = MyTypography.titleLarge,
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
 
             Column (
                 Modifier
@@ -319,6 +375,7 @@ fun ContainerButtons(
 fun ContainerLogin(
     offsetY: Float,
     onHideLoginClicked: () -> Unit,
+    onMissPassClicked: () -> Unit
 ) {
 
     val emailValue = remember { mutableStateOf(TextFieldValue("")) }
@@ -420,15 +477,18 @@ fun ContainerLogin(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                Text(
+                TextButton(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "Esqueci minha senha",
-                    style = MyTypography.labelMedium.copy(
-                        color = Color.White,
-                        textDecoration = TextDecoration.Underline,
-                        textAlign = TextAlign.Center
+                    onClick = onMissPassClicked
+                ) {
+                    Text(
+                        text = "Esqueci minha senha",
+                        style = MyTypography.labelMedium.copy(
+                            color = Color.White,
+                            textDecoration = TextDecoration.Underline,
+                            textAlign = TextAlign.Center),
                     )
-                )
+                }
 
             }
         }
@@ -517,6 +577,124 @@ fun ContainerDoubts(offsetY: Float, onHideDoubtsClicked: () -> Unit) {
                         Spacer(modifier = Modifier.height(24.dp))
                     }
                 }
+
+            }
+        }
+
+        VersionField()
+    }
+}
+
+@Composable
+fun ContainerMissPass(offsetY: Float, onHideMissPassClicked: () -> Unit) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .offset(y = offsetY.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Bottom
+    ) {
+
+        Column (
+            modifier = Modifier
+                .fillMaxHeight(0.7f)
+                .fillMaxWidth()
+                .background(PrimaryTransparent),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ){
+
+            Column (
+                Modifier
+                    .fillMaxWidth(0.8f)
+            ) {
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    IconButton(
+                        onClick = onHideMissPassClicked,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBack,
+                            contentDescription = "Back button",
+                            tint = Color.White,
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text(
+                        text = "Esqueci minha senha",
+                        style = MyTypography.titleLarge.copy(
+                            color = Color.White,
+                            fontSize = 24.sp
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                Text(
+                    text = "Se você não se lembra da sua senha clique no botão \"Enviar\" para que chegue no seu email um link de redefinição de senha.",
+                    color = Color.White,
+                    modifier = Modifier.padding(vertical = 16.dp),
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "Caso contrario entre em contato com nosso suporte.",
+                    color = Color.White,
+                    modifier = Modifier.padding(vertical = 16.dp),
+                )
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        // Logica para enviar email de redefinição de senha
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White
+                    ),
+                    shape = RoundedCornerShape(
+                        20.dp
+                    ),
+                    contentPadding = PaddingValues(
+                        vertical = 12.dp
+                    )
+                ) {
+                    Text(
+                        text = "Enviar",
+                        style = ButtonTextStyle.copy(
+                            color = Primary
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                TextButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {  }
+                ) {
+                    Text(
+                        text = "Falar com suporte",
+                        style = MyTypography.labelMedium.copy(
+                            color = Color.White,
+                            textDecoration = TextDecoration.Underline,
+                            textAlign = TextAlign.Center,
+                        ),
+                    )
+                }
+
+
 
             }
         }

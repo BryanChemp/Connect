@@ -1,4 +1,4 @@
-package br.com.example.connect.page
+package br.com.example.connect.page.register
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,22 +20,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.com.example.connect.components.PasswordTextFieldWithoutLabel
-import br.com.example.connect.components.PasswordTextFieldWithoutLabelAndButton
-import br.com.example.connect.components.SimpleCheckbox
+import br.com.example.connect.components.CodeTextField
 import br.com.example.connect.ui.theme.ButtonTextStyle
 import br.com.example.connect.ui.theme.MyTypography
 import br.com.example.connect.ui.theme.Primary
-import br.com.example.connect.ui.theme.PrimaryTransparent
 import br.com.example.connect.ui.theme.PrimaryTransparent2
+import br.com.example.connect.ui.theme.TextFieldLabelStyle
 
 @Composable
-fun RegisterFinalPage() {
-    val checkTermsValue = remember { mutableStateOf((false)) }
-    val errorCheckTerms = remember { mutableStateOf("") }
-    val checkNewsValue = remember { mutableStateOf((false)) }
+fun RegisterCodePage(goToNextStep: () -> Unit) {
+    val codeLength = 5
+    val codeValues = List(codeLength) { remember { mutableStateOf(TextFieldValue("")) } }
+    val errorCodeMsg = remember { mutableStateOf("") }
 
     Column (
         Modifier
@@ -65,9 +63,20 @@ fun RegisterFinalPage() {
             ) {
                 Column {
                     Text(
-                        text = "Agora é só finalizar\no cadastro",
+                        text = "Confirme seu email",
                         style = MyTypography.titleLarge.copy(
                             fontSize = 24.sp,
+                            textAlign = TextAlign.Center,
+                            color = Color.White
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        text = "Digite o código que chegou\nno seu email",
+                        style = TextFieldLabelStyle.copy(
                             textAlign = TextAlign.Center,
                             color = Color.White
                         ),
@@ -77,23 +86,25 @@ fun RegisterFinalPage() {
 
                 Column {
 
-                    SimpleCheckbox(
-                        text = "Declaro que li e concordo com os termos e políticas de privacidade",
-                        isChecked = checkTermsValue
+                    CodeTextField(codeValues, codeLength)
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = "Reenviar",
+                        style = MyTypography.labelMedium.copy(
+                            color = Color.White,
+                            textDecoration = TextDecoration.Underline,
+                            textAlign = TextAlign.Start
+                        )
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    SimpleCheckbox(
-                        text = "Aceito receber novidades no meu email",
-                        isChecked = checkNewsValue
-                    )
-
-                    Spacer(modifier = Modifier.height(32.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
 
                     Button(
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = {},
+                        onClick = goToNextStep,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.White
                         ),
@@ -105,7 +116,7 @@ fun RegisterFinalPage() {
                         )
                     ) {
                         Text(
-                            text = "Finalizar",
+                            text = "Continuar",
                             style = ButtonTextStyle.copy(
                                 color = Primary
                             )

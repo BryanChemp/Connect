@@ -53,7 +53,7 @@ val MyTypography = Typography(
     titleLarge = TextStyle(
         fontFamily = poppinsFamily,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 36.sp,
+        fontSize = 32.sp,
         lineHeight = 44.sp,
     ),
     labelSmall = TextStyle(

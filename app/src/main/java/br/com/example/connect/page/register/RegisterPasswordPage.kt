@@ -1,4 +1,4 @@
-package br.com.example.connect.page
+package br.com.example.connect.page.register
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,7 +13,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -22,26 +20,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.com.example.connect.components.SimpleTextFieldWithoutLabel
-import br.com.example.connect.components.VersionField
+import br.com.example.connect.components.PasswordTextFieldWithoutLabel
+import br.com.example.connect.components.PasswordTextFieldWithoutLabelAndButton
 import br.com.example.connect.ui.theme.ButtonTextStyle
 import br.com.example.connect.ui.theme.MyTypography
 import br.com.example.connect.ui.theme.Primary
-import br.com.example.connect.ui.theme.PrimaryTransparent
 import br.com.example.connect.ui.theme.PrimaryTransparent2
-import br.com.example.connect.ui.theme.TextFieldLabelStyle
 
 @Composable
-fun RegisterNamePage(
-) {
-
-    val nameValue = remember { mutableStateOf(TextFieldValue("")) }
-    val errorNameMsg = remember { mutableStateOf("") }
-    val lastnameValue = remember { mutableStateOf(TextFieldValue("")) }
-    val errorErrorLastnameMsg = remember { mutableStateOf("") }
+fun RegisterPasswordPage(goToNextStep: () -> Unit) {
+    val passValue = remember { mutableStateOf(TextFieldValue("")) }
+    val errorPassMsg = remember { mutableStateOf("") }
+    val confirmPassValue = remember { mutableStateOf(TextFieldValue("")) }
+    val errorConfirmPassMsg = remember { mutableStateOf("") }
 
     Column (
         Modifier
@@ -70,7 +63,7 @@ fun RegisterNamePage(
             ) {
                 Column {
                     Text(
-                        text = "Qual é o seu nome?",
+                        text = "Crie uma senha",
                         style = MyTypography.titleLarge.copy(
                             fontSize = 24.sp,
                             textAlign = TextAlign.Center,
@@ -81,25 +74,30 @@ fun RegisterNamePage(
                 }
 
                 Column {
-                    SimpleTextFieldWithoutLabel(
-                        placeholder = "Seu nome",
-                        value = nameValue,
-                        errorMsg = errorNameMsg,
+
+                    var isPasswordVisible = remember { mutableStateOf(false) }
+
+                    PasswordTextFieldWithoutLabel(
+                        placeholder = "Crie uma senha",
+                        value = passValue,
+                        errorMsg = errorPassMsg,
+                        isPasswordVisible = isPasswordVisible
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    SimpleTextFieldWithoutLabel(
-                        placeholder = "Seu sobrenome",
-                        value = lastnameValue,
-                        errorMsg = errorErrorLastnameMsg,
+                    PasswordTextFieldWithoutLabelAndButton(
+                        placeholder = "Repita a senha",
+                        value = confirmPassValue,
+                        errorMsg = errorConfirmPassMsg,
+                        isPasswordVisible = isPasswordVisible
                     )
 
                     Spacer(modifier = Modifier.height(32.dp))
 
                     Button(
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = {},
+                        onClick = goToNextStep,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.White
                         ),
