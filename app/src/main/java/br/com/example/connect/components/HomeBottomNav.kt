@@ -26,7 +26,9 @@ import androidx.compose.ui.unit.dp
 import br.com.example.connect.type.HomePages
 import br.com.example.connect.ui.theme.Gray
 import br.com.example.connect.ui.theme.Primary
+import br.com.example.connect.ui.theme.PrimaryTransparent
 import br.com.example.connect.ui.theme.PrimaryTransparent2
+import br.com.example.connect.ui.theme.PrimaryTransparent3
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -48,10 +50,10 @@ fun HomeBottomNav(
         modifier = Modifier.fillMaxWidth()
     ) {
 
-        Spacer(modifier = Modifier.fillMaxWidth().height(0.5.dp).background(Color.White))
+        Spacer(modifier = Modifier.fillMaxWidth().height(0.5.dp).background(Color.LightGray))
 
         NavigationBar(
-            containerColor = PrimaryTransparent2,
+            containerColor = PrimaryTransparent3,
         ) {
             Spacer(modifier = Modifier.width(8.dp))
 

@@ -26,7 +26,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.example.connect.R
 import br.com.example.connect.ui.theme.ButtonTextStyle
+import br.com.example.connect.ui.theme.PrimaryTransparent
 import br.com.example.connect.ui.theme.PrimaryTransparent2
+import br.com.example.connect.ui.theme.PrimaryTransparent3
 
 @Composable
 fun HomeTopBar(
@@ -41,7 +43,7 @@ fun HomeTopBar(
         Row(
             Modifier
                 .fillMaxWidth()
-                .background(PrimaryTransparent2)
+                .background(PrimaryTransparent3)
                 .padding(start = 24.dp, end = 24.dp, top = 48.dp, bottom = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -87,6 +89,6 @@ fun HomeTopBar(
             }
         }
         
-        Spacer(modifier = Modifier.fillMaxWidth().height(0.5.dp).background(Color.White))
+        Spacer(modifier = Modifier.fillMaxWidth().height(0.5.dp).background(Color.LightGray))
     }
 }
