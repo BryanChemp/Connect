@@ -58,7 +58,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import br.com.example.connect.R
+import br.com.example.connect.activity.HomeActivity
+import br.com.example.connect.activity.LoginActivity
 import br.com.example.connect.activity.RegisterActivity
 import br.com.example.connect.components.PasswordTextField
 import br.com.example.connect.components.SimpleTextField
@@ -240,7 +243,11 @@ fun PreScreen(
         ContainerLogin(
             offsetY = offsetYLogin.value,
             onHideLoginClicked = { showLogin = false},
-            onMissPassClicked = { showMissPass = !showMissPass }
+            onMissPassClicked = { showMissPass = !showMissPass },
+            onLoginClicked = {
+                val intent = Intent(context, HomeActivity::class.java)
+                context.startActivity(intent)
+            }
         )
 
         ContainerDoubts(
@@ -375,7 +382,8 @@ fun ContainerButtons(
 fun ContainerLogin(
     offsetY: Float,
     onHideLoginClicked: () -> Unit,
-    onMissPassClicked: () -> Unit
+    onMissPassClicked: () -> Unit,
+    onLoginClicked: () -> Unit
 ) {
 
     val emailValue = remember { mutableStateOf(TextFieldValue("")) }
@@ -454,7 +462,7 @@ fun ContainerLogin(
                                 errorPasswordMsg,
                                 validEmail,
                                 validPassword)) {
-                            // iniciar login
+                            onLoginClicked()
                         }
                     },
                     colors = ButtonDefaults.buttonColors(
