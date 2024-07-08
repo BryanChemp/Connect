@@ -1,5 +1,7 @@
 package br.com.example.connect.page.home
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,11 +19,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -35,21 +37,29 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.example.connect.R
+import br.com.example.connect.statics.PostList
+import br.com.example.connect.type.Post
+import br.com.example.connect.ui.theme.DarkGray
 import br.com.example.connect.ui.theme.Primary
+import br.com.example.connect.ui.theme.PrimaryTransparent3
 import br.com.example.connect.ui.theme.TextFieldLabelStyle
+import br.com.example.connect.util.DateUtil
+import java.text.SimpleDateFormat
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PostsPage() {
     Column (
         Modifier
             .fillMaxSize()
-            .background(Primary)
+            .background(DarkGray)
     ) {
 
         // Exibindo 5 posts usando LazyColumn
@@ -57,27 +67,44 @@ fun PostsPage() {
             modifier = Modifier.fillMaxSize()
         ) {
 
-            item { Spacer(Modifier.height(128.dp)) }
+            item { Spacer(Modifier.height(116.dp)) }
 
-            itemsIndexed(listOf("Post 1", "Post 2", "Post 3", "Post 4", "Post 5")) { index, post ->
-                Post(index, post)
-                Spacer(modifier = Modifier.height(16.dp)) // Espaço entre os posts
+            itemsIndexed(PostList.posts) { index, post ->
+                PostCard(index, post)
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Post(index: Int, content: String) {
+fun PostCard(index: Int, post: Post) {
+
+    val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm")
+
+    val userPhoto = post.user.perfilPhoto
+    val userName = post.user.name
+    val hour = DateUtil.getHour(post.date)
+    val date = DateUtil.formatDate(dateFormat.format(post.date))
+    val description = post.description
+    val mediaAmount = post.mediaList.size
+    val likeAmout = post.info.likeAmount
+    val commentAmout = post.info.commentAmount
+    val shareAmount = post.info.shareAmount
+
+
+
+
     Card (
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = Primary
-        )
+        ),
+        shape = RectangleShape
     ) {
         Column {
-            // Cabeçalho do post (foto, nome, etc)
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -85,11 +112,14 @@ fun Post(index: Int, content: String) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Row {
+                Row (
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Image(
-                        painter = painterResource(id = R.drawable.bg_login_screen),
+                        painter = painterResource(id = userPhoto),
                         contentDescription = "Profile Picture",
                         contentScale = ContentScale.Crop,
+                        alignment = Alignment.Center,
                         modifier = Modifier
                             .size(48.dp)
                             .clip(CircleShape)
@@ -97,14 +127,13 @@ fun Post(index: Int, content: String) {
 
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    // Coluna com nome e data
                     Column {
                         Text(
-                            text = "Bryan Chemp",
+                            text = userName,
                             style = TextFieldLabelStyle
                         )
                         Text(
-                            text = "2h - ",
+                            text = "$hour h - $date",
                             style = MaterialTheme.typography.bodySmall,
                             color = Color.LightGray
                         )
@@ -120,41 +149,60 @@ fun Post(index: Int, content: String) {
                 }
             }
 
-            // Conteúdo do post (texto, imagens, etc)
             Row (
                 modifier = Modifier.padding(16.dp)
             ){
                 Text(
-                    text = content,
+                    text = description,
                     color = Color.White
                 )
             }
 
-            //ROW HORIZONTAL SCROLL COM AS IMAGENS EM UMA PROPORÇÃO ESPECIFICA
             val pagerState = rememberPagerState()
 
-            HorizontalPager(
-                pageCount = 5, // Número de imagens
-                state = pagerState,
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(4 / 3f)
                     .padding(16.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
 
+                HorizontalPager(
+                    pageCount = mediaAmount,
+                    state = pagerState,
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.bg_register_screen),
-                        contentDescription = "Post Image",
+                    Box(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .clip(MaterialTheme.shapes.medium),
-                        contentScale = ContentScale.Crop
-                    )
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+
+                        ) {
+
+                        Image(
+                            painter = painterResource(id = post.mediaList[it].mediaPath),
+                            contentDescription = "Post Image",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(MaterialTheme.shapes.medium),
+                            contentScale = ContentScale.Crop
+                        )
+
+                    }
                 }
+
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
+                        .background(
+                            color = PrimaryTransparent3,
+                            shape = RoundedCornerShape(4.dp)
+                        )
+                    ,
+                    text = " ${pagerState.currentPage + 1}/$mediaAmount ",
+                    color = Color.White
+                )
             }
 
             //ROW LIKE COMENTAR E SHARE
@@ -180,7 +228,7 @@ fun Post(index: Int, content: String) {
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "15",
+                            text = likeAmout.toString(),
                             color = Color.White,
                             style = TextFieldLabelStyle.copy(
                                 fontSize = 14.sp
@@ -205,7 +253,7 @@ fun Post(index: Int, content: String) {
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "15",
+                            text = commentAmout.toString(),
                             color = Color.White,
                             style = TextFieldLabelStyle.copy(
                                 fontSize = 14.sp
@@ -232,7 +280,7 @@ fun Post(index: Int, content: String) {
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "15",
+                            text = shareAmount.toString(),
                             color = Color.White,
                             style = TextFieldLabelStyle.copy(
                                 fontSize = 14.sp
@@ -242,10 +290,6 @@ fun Post(index: Int, content: String) {
                 }
             }
 
-            Spacer(modifier = Modifier
-                .fillMaxWidth()
-                .height(0.5.dp)
-                .background(Color.LightGray))
         }
     }
 }
