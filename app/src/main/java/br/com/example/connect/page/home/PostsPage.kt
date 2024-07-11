@@ -183,8 +183,7 @@ fun PostCard(index: Int, post: Post) {
                             painter = painterResource(id = post.mediaList[it].mediaPath),
                             contentDescription = "Post Image",
                             modifier = Modifier
-                                .fillMaxSize()
-                                .clip(MaterialTheme.shapes.medium),
+                                .fillMaxSize(),
                             contentScale = ContentScale.Crop
                         )
 
